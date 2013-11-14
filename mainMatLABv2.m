@@ -20,3 +20,9 @@ pos = 1;
 neg = -1;
 [evec, evall] = ldaMatLAB(dadosPos, dadosNeg);
 diag(evall);
+
+entrada = sigmoid
+saida = dados(:, 42)
+net = patternnet()
+net.numLayers = 2
+train(net, entrada', saida')
