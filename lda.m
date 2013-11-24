@@ -35,8 +35,8 @@ invsw=inv(sw);
 sb1=tamPos*(mu1-mu)'*(mu1-mu);
 sb2=tamNeg*(mu2-mu)'*(mu2-mu);
 SB=sb1+sb2;
-v1=invsw*SB;
+v=invsw*SB;
 
 % find eigne values and eigen vectors of the (v)
+
 [evec,evall]=eig(v);
-[evec1,evall1]=eig(v1);
