@@ -37,20 +37,20 @@ visualizacao = [v1, v2, v3];
 boxplot(SCORE,'orientation','vertical','labels',visualizacao(:, 1))
 
 %pegando os valores mais significativos.
-visualizacaoutil = visualizacao(1:18, :);
-entradas = SCORE(:, 1:18);
+visualizacaoutil = visualizacao(1:26, :);
+entradas = SCORE(:, 1:26);
 
 
 %inicializando a rede...
-rede = patternnet([25]);
+%rede = patternnet([25]);
 %rede = patternnet([25 10], 'trainlm');
 %rede = patternnet([25], 'trainrp');
 %rede = patternnet([25], 'traingd');
-%rede = patternnet([25], 'traingdx');
+rede = patternnet([30], 'traingdx');
 
 
 %rodando o treino da rede
-rede = train(rede, SCORE', saida')
+rede = train(rede, entradas', saida')
 %rede = train(rede, SCORE(:, 1:12)', saida')
 
 
