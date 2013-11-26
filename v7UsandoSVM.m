@@ -13,15 +13,30 @@ dados2 = [dadosPos;dadosNeg];
 
 
 %normaliza os dados
-%sigmoided = zscore(dados2);
-sigmoided= normalizacao(dados2);
+
+dados2 = normalizacao(dados2);
 
 %PCA
 %[COEFF, SCORE, LATENT, TSQUARED] = princomp(sigmoided);
 
-%preparosvm = svmtrain(dados2, saida);
-preparosvm = svmtrain(dados2, saida, 'kernel_function', 'rbf');
-% ESSE ACIMA DEU 98%!!!! 0,9801!!! DEUS ABENÇOE!!!!
+%divide aleatoriamente o conjunto de dados nos 3 casos proporcional aos
+%parametros
+[treino, validacao, teste]=dividerand(size(dados, 1), 0.7, 0, 0.3);
 
-resultsvm = svmclassify(preparosvm, dados2);
-percacerto = sum(resultsvm == saida)/size(dados, 1)
+svm = svmtrain(dados2(treino, :), saida(treino, :), 'kernel_function', 'polynomial');
+
+
+resultTreino = svmclassify(svm, dados2(treino,:));
+resultTeste = svmclassify(svm, dados2(teste,:));
+resultGeral = svmclassify(svm, dados2);
+
+
+plotconfusion(resultTreino', saida(treino, :)', 'Treino', resultTeste', saida(teste,:)', 'Teste', resultGeral', saida','Geral' );
+
+%Sem Normalizar
+%polinomial: 4- 93% 3- 95% 1- 86%
+%rbf- 94%
+
+%Normalizado
+%rbf- 93
+%3 - 93.9 4- 93% 1- 84% 2- 94%
