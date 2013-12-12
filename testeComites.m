@@ -30,6 +30,6 @@ selecao = selecaoComite( redes, dados2(treino, :), saida(treino, :), mse, 1);
 
 resultTreino = round( comite( selecao, dados2(treino, :) ) );
 resultTeste  = round( comite( selecao, dados2(teste, :) ) );
-
+resultGeral  = round( comite( selecao, dados2 ) );
 
 plotconfusion(resultTreino, saida(treino, :)', 'Treino', resultTeste, saida(teste,:)', 'Teste', resultGeral, saida','Geral' );
