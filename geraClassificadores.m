@@ -1,4 +1,4 @@
-function classificadores = geraClassificadores(entrada, resposta, tamTreino, quantMLP, quantSVM)
+function [classificadores, mse] = geraClassificadores(entrada, resposta, tamTreino, quantMLP, quantSVM)
     classificadores = cell(quantMLP + quantSVM,1);
     mse = zeros(quantMLP+ quantSVM,1);
     for i=1:quantMLP
@@ -28,10 +28,11 @@ function classificadores = geraClassificadores(entrada, resposta, tamTreino, qua
         mse(i, 1) = sum( ( atual(entrada') - resposta' ) .^2 ) / size(entrada,1);
         
         classificadores{i} = atual;
+        
+        i
     end
     
     for i=quantMLP: quantSVM+quantMLP
         
     end
-    mse
 end
