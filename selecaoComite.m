@@ -33,6 +33,6 @@ function comiteAtual = selecaoComite(redes, entrada, resposta, mse, exploracao )
        
    end
    comiteAtual = redes(comiteAtual);
-   plotconfusion( round( comite(comiteAtual, entrada) ), resposta' );
+   %plotconfusion( round( comite(comiteAtual, entrada) ), resposta' );
 end
 

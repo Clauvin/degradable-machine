@@ -3,7 +3,13 @@ function retorno = comite(redes, entrada)
     respostas = zeros( quantRedes, size( entrada, 1 ) );
     
     for i=1:quantRedes
-        respostas(i, :) = redes{i}(entrada'); %resposta vem por linhas
+        if ( isstruct(redes{i}) )
+            %svm
+            respostas(i, :) = svmclassify(redes{i}, entrada)';
+        else
+            %mlp
+            respostas(i, :) = redes{i}(entrada'); %resposta vem por linhas
+        end
     end
-    retorno = mean(respostas); % media
+    retorno = mean(respostas, 1); % media
 end
