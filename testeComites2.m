@@ -13,10 +13,9 @@ dados2 = [dadosPos;dadosNeg];
 
 
 %normaliza os dados
-%sigmoided = zscore(dados2);
-sigmoided= normalizacao(dados2);
 
-%PCA
+dados2 = normalizacao(dados2);
+
 [COEFF, SCORE, LATENT, TSQUARED] = princomp(sigmoided);
 
 % matriz para ajudar a visualizar o quanto cada variável
@@ -27,32 +26,22 @@ v3 = LATENT./sum(LATENT) * 100;
 visualizacao = [v1, v2, v3]
 
 % isso mostrou que podemos pular de
-% 41 para 18 variáveis
-% (índice de 91.11% de importância)
+% 41 para 26 variáveis
+% (índice de 99.00% de importância)
 
-% IMPORTANTE
-% e como retiraremos os outliers?
-
-% boxplot para analise estatística
-boxplot(SCORE,'orientation','vertical','labels',visualizacao(:, 1))
-
-%pegando os valores mais significativos.
-visualizacaoutil = visualizacao(1:26, :);
 entradas = SCORE(:, 1:26);
 
+%divide aleatoriamente o conjunto de dados nos 3 casos proporcional aos
+%parametros
+[treino, validacao, teste]=dividerand(size(dados, 1), 0.7, 0, 0.3);
 
-%inicializando a rede...
-%rede = patternnet([25]);
-%rede = patternnet([25 10], 'trainlm');
-%rede = patternnet([25], 'trainrp');
-%rede = patternnet([25], 'traingd');
-rede = patternnet([30], 'traingdx');
+[ redes, mse ] = geraClassificadores(entradas(treino, :), saida(treino, :), 50, 200);
 
-
-%rodando o treino da rede
-rede = train(rede, entradas', saida')
-%rede = train(rede, SCORE(:, 1:12)', saida')
+selecao = selecaoComite( redes, entradas(treino, :), saida(treino, :), mse, 1);
 
 
-%Dúvida 1:
-% Como ler o histograma de erro?
+resultTreino = round( comite( selecao, entradas(treino, :) ) );
+resultTeste  = round( comite( selecao, entradas(teste, :) ) );
+resultGeral  = round( comite( selecao, entradas ) );
+
+plotconfusion(resultTreino, saida(treino, :)', 'Treino', resultTeste, saida(teste,:)', 'Teste', resultGeral, saida','Geral' );
