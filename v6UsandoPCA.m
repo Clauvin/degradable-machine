@@ -24,7 +24,7 @@ sigmoided= normalizacao(dados2);
 v1 = cumsum(ones(41, 1));
 v2 = cumsum(LATENT./sum(LATENT) * 100);
 v3 = LATENT./sum(LATENT) * 100;
-visualizacao = [v1, v2, v3];
+visualizacao = [v1, v2, v3]
 
 % isso mostrou que podemos pular de
 % 41 para 18 variáveis

@@ -16,6 +16,8 @@ dados2 = [dadosPos;dadosNeg];
 
 dados2 = normalizacao(dados2);
 
+
+
 %PCA
 %[COEFF, SCORE, LATENT, TSQUARED] = princomp(sigmoided);
 
