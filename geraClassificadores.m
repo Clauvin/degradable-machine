@@ -1,7 +1,12 @@
 function [classificadores, mse] = geraClassificadores(entrada, resposta, quantMLP, quantSVM)
     classificadores = {};
     mse = zeros(quantMLP+ quantSVM,1);
+    
     tamTreino = size(entrada, 1);
+    erros = ones(tamTreino, 1);
+    
+    size(entrada)
+    size(resposta)
     
     for i=1:quantMLP
         
@@ -23,10 +28,17 @@ function [classificadores, mse] = geraClassificadores(entrada, resposta, quantML
         atual.trainParam.max_fail = randi([4, 20]);
         %atual.trainParam.showWindow =0;
         
-        treino =  randi( [1 tamTreino], [size(entrada,1) 1] ); %equivalente ao baggin
-        atual = train(atual, entrada( treino, :)', resposta( treino, :)' );
+        %treino =  randi( [1 tamTreino], [size(entrada,1) 1] ); %equivalente ao baggin
+        treino = boosting(erros);
         
-        mse(i, 1) = sum( ( atual(entrada') - resposta' ) .^2 ) / size(entrada,1);
+        conjTreino = entrada( treino, :)';
+        conjResposta = resposta( treino, :)';
+        
+        atual = train(atual, conjTreino, conjResposta );
+        
+        erroAtual = atual(entrada') - resposta'; %erro calculado com o conj todo
+        mse(i, 1) = sum( ( erroAtual ) .^2 ) / size(entrada,1);
+        erros = erros + abs(erroAtual)';
         
         classificadores{i, 1} = atual;
         
@@ -36,12 +48,13 @@ function [classificadores, mse] = geraClassificadores(entrada, resposta, quantML
     i = quantMLP+1;
     while i <= quantSVM+quantMLP
         
-        tipo= randi([1 5]);
-        treino =  randi( [1 tamTreino], [size(entrada,1) 1] ); %equivalente ao baggin
+        %treino =  randi( [1 tamTreino], [size(entrada,1) 1] ); %equivalente ao baggin
+        treino =  boosting(erros);
         
         conjTreino = entrada(treino, :);
         conjResposta = resposta(treino, :);
         
+        tipo= randi([1 5]);
         try
         switch tipo
             case 1
@@ -59,17 +72,33 @@ function [classificadores, mse] = geraClassificadores(entrada, resposta, quantML
                 atual =  svmtrain(conjTreino, conjResposta, 'kernel_function', 'rbf', 'rbf_sigma', sigma);
                 
             case 5
-                atual =  svmtrain(entrada, resposta, 'kernel_function', 'mlp');
+                atual =  svmtrain(conjTreino, conjResposta, 'kernel_function', 'mlp');
         end
         catch er
-            disp('Falha ao treinar SVM');
-            i = i+1
+            %disp(er);
+            %i = i+1;
             continue %tente outra vez
         end
-        mse(i, 1) = sum( abs( svmclassify(atual, entrada) - resposta ) )/size(entrada,1);
+        erroAtual = svmclassify(atual, entrada) - resposta;
+        mse(i, 1) = sum( abs( erroAtual ) )/size(entrada,1);
+        erros = erros + abs(erroAtual);
         
         classificadores{i, 1} = atual;
         
         i = i + 1
+    end
+end
+
+function amostra= boosting(erros)
+    tamAmostra = size(erros,1);
+    proporcao = cumsum( erros/sum(erros) );
+
+    amostra = zeros(tamAmostra, 1);
+
+    for i=1:tamAmostra
+        sorteio = rand();
+
+        resultado = find(sorteio <= proporcao);
+        amostra(i) = resultado(1);
     end
 end
