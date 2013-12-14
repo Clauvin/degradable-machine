@@ -16,7 +16,7 @@ dados2 = [dadosPos;dadosNeg];
 
 dados2 = normalizacao(dados2);
 
-[COEFF, SCORE, LATENT, TSQUARED] = princomp(sigmoided);
+[COEFF, SCORE, LATENT, TSQUARED] = princomp(dados2);
 
 % matriz para ajudar a visualizar o quanto cada variável
 % ajuda no problema
@@ -33,12 +33,11 @@ entradas = SCORE(:, 1:26);
 
 %divide aleatoriamente o conjunto de dados nos 3 casos proporcional aos
 %parametros
-[treino, validacao, teste]=dividerand(size(dados, 1), 0.7, 0, 0.3);
+[treino, validacao, teste]= dividerand(size(dados, 1), 0.7, 0, 0.3);
 
-[ redes, mse ] = geraClassificadores(entradas(treino, :), saida(treino, :), 50, 200);
+[ redes, mse ] = geraClassificadores(entradas(treino, :), saida(treino, :), 5, 5);
 
 selecao = selecaoComite( redes, entradas(treino, :), saida(treino, :), mse, 1);
-
 
 resultTreino = round( comite( selecao, entradas(treino, :) ) );
 resultTeste  = round( comite( selecao, entradas(teste, :) ) );
