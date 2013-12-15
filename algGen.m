@@ -1,6 +1,4 @@
-function selecao= algGen(redes, entrada, resposta)
-    tamPopulacao = 1000;
-    quantGeracoes = 1000;
+function [selecao, populacao, adaptacao] = algGen(redes, entrada, resposta, tamPopulacao, quantGeracoes)
     quantRedes = size(redes,1);
     
     %cada individuo eh um vetor binario dizendo se aquele classificador
@@ -8,27 +6,18 @@ function selecao= algGen(redes, entrada, resposta)
     populacao = randi([0 1], [tamPopulacao quantRedes]); %um individuo por linha
     
     for i=1: quantGeracoes
-        adaptacao = fitness(populacao);
-        populacao = mutacao(mating(populacao, adaptacao));
+        populacao = mating(redes, populacao, entrada, resposta);
+        populacao = mutacao(populacao, 0.01);
+        i
     end
-    
-    [melhorFitness, melhorIndividuo] = max(fitness(populacao));
+    adaptacao = fitness(redes, populacao, entrada, resposta);
+    [melhorFitness, melhorIndividuo] = max(adaptacao);
     
     %find retorna um vetor com todas as posicoes nao nulas, entao com isso
     %converto o vetor binario na melhor combinacao de redes
-    melhorFitness
-    selecao = redes(find(melhorIndividuo)); 
-end
-
-function novaGeracao = mating(populacao, adaptacao)
-
+    melhorMse = 1/melhorFitness
+    selecao = redes(find(melhorIndividuo));
 end
 
 
-function novaPopulacao=mutacao(populacao)
 
-end
-
-function adaptacao=fitness(populacao)
-
-end

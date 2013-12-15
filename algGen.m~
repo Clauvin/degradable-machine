@@ -20,21 +20,5 @@ function selecao= algGen(redes, entrada, resposta)
     selecao = redes(find(melhorIndividuo)); 
 end
 
-function novaGeracao = mating(populacao, adaptacao)
 
-end
 
-function [filho1, filho2] = crossover(pai1, pai2)
-    tam = size(pai1, 2);
-    ponto1 = randi([1 tam]);
-    ponto2 = randi([1 tam ]);
-    filho1 = [pai1(1: min(ponto1,ponto2), pai2() ]
-end
-
-function novaPopulacao=mutacao(populacao)
-
-end
-
-function adaptacao=fitness(populacao)
-
-end
