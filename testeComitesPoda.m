@@ -35,9 +35,9 @@ entradas = SCORE(:, 1:26);
 %parametros
 [treino, validacao, teste]= dividerand(size(dados, 1), 0.7, 0, 0.3);
 
-[ redes, mse ] = geraClassificadores(entradas(treino, :), saida(treino, :), 5, 5);
+[ redes, mse ] = geraClassificadores(entradas(treino, :), saida(treino, :), 0, 10);
 
-selecao = selecaoComite( redes, entradas(treino, :), saida(treino, :), mse, 1);
+selecao = podaComESem( redes, entradas(treino, :), saida(treino, :), mse, 1);
 
 resultTreino = round( comite( selecao, entradas(treino, :) ) );
 resultTeste  = round( comite( selecao, entradas(teste, :) ) );
