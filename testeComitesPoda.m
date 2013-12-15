@@ -35,9 +35,13 @@ entradas = SCORE(:, 1:26);
 %parametros
 [treino, validacao, teste]= dividerand(size(dados, 1), 0.7, 0, 0.3);
 
+<<<<<<< HEAD:testeComites2.m
 [ redes, mse ] = geraClassificadores(entradas(treino, :), saida(treino, :), 50, 200);
+=======
+[ redes, mse ] = geraClassificadores(entradas(treino, :), saida(treino, :), 0, 10);
+>>>>>>> ad9250f204d17c57919c68dfd17fc11d0d6a8363:testeComitesPoda.m
 
-selecao = selecaoComite( redes, entradas(treino, :), saida(treino, :), mse, 1);
+selecao = podaComESem( redes, entradas(treino, :), saida(treino, :), mse, 1);
 
 resultTreino = round( comite( selecao, entradas(treino, :) ) );
 resultTeste  = round( comite( selecao, entradas(teste, :) ) );

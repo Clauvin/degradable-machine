@@ -31,10 +31,6 @@ dados=csvread('dados.csv');
 
 
 
-
-
-
-
 %separou dados entre positivos e negativos
 dadosPos= dados( find(dados(:, 42)==1),  :);
 dadosNeg= dados( find(dados(:, 42)==0),  :);
@@ -61,16 +57,17 @@ v3 = LATENT./sum(LATENT) * 100;
 visualizacao = [v1, v2, v3];
 
 % isso mostrou que podemos pular de
-% 41 para 18 variáveis
-% (índice de 91.11% de importância)
+% 41 para 26 variáveis
+% (índice de 99.00% de importância)
 
+%{
 %limpando os outliers desses pontos mais significativos
 agrupamentos = hist(dados2(:, 1), 11); % Histogram bin counts
-N = max(bin_counts); % Maximum bin count
-mu3 = mean(c3); % Data mean
-sigma3 = std(c3); % Data standard deviation
+N = max(agrupamentos); % Maximum bin count
+mu3 = mean(agrupamentos); % Data mean
+sigma3 = std(agrupamentos); % Data standard deviation
 
-hist(c3) % Plot histogram
+hist(agrupamentos) % Plot histogram
 hold on
 plot([mu3 mu3],[0 N],'r','LineWidth',2) % Mean
 X = repmat(mu3+(1:2)*sigma3,2,1);
@@ -78,9 +75,13 @@ Y = repmat([0;N],1,2);
 plot(X,Y,'g','LineWidth',2) % Standard deviations
 legend('Data','Mean','Stds')
 hold off
+%}
 
 % boxplot para analise estatística
-boxplot(SCORE,'orientation','vertical','labels',visualizacao(:, 1))
+olha = boxplot(SCORE,'orientation','vertical','labels',visualizacao(:, 1),'plotstyle','traditional')
+findobj(gcf,'tag','Outliers');
+lista = cumsum([ones(1,1055)])
+% gname(lista')
 
 %pegando os valores mais significativos.
 visualizacaoutil = visualizacao(1:18, :);
