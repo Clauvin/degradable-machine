@@ -18,16 +18,16 @@ dados2 = normalizacao(dados2);
 
 [COEFF, SCORE, LATENT, TSQUARED] = princomp(dados2);
 
-% matriz para ajudar a visualizar o quanto cada variável
+% matriz para ajudar a visualizar o quanto cada variï¿½vel
 % ajuda no problema
 v1 = cumsum(ones(41, 1));
 v2 = cumsum(LATENT./sum(LATENT) * 100);
 v3 = LATENT./sum(LATENT) * 100;
-visualizacao = [v1, v2, v3]
+visualizacao = [v1, v2, v3];
 
 % isso mostrou que podemos pular de
-% 41 para 26 variáveis
-% (índice de 99.00% de importância)
+% 41 para 26 variï¿½veis
+% (ï¿½ndice de 99.00% de importï¿½ncia)
 
 entradas = SCORE(:, 1:26);
 
@@ -35,7 +35,7 @@ entradas = SCORE(:, 1:26);
 %parametros
 [treino, validacao, teste]= dividerand(size(dados, 1), 0.7, 0, 0.3);
 
-[ redes, mse ] = geraClassificadores(entradas(treino, :), saida(treino, :), 5, 5);
+[ redes, mse ] = geraClassificadores(entradas(treino, :), saida(treino, :), 50, 200);
 
 selecao = selecaoComite( redes, entradas(treino, :), saida(treino, :), mse, 1);
 

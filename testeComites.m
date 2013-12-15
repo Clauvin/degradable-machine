@@ -27,7 +27,7 @@ dados2 = normalizacao(dados2);
 
 [ redes, mse ] = geraClassificadores(dados2(treino, :), saida(treino, :), 50, 200);
 
-selecao = selecaoComite( redes, dados2(treino, :), saida(treino, :), mse, 0);
+selecao = selecaoComite( redes, dados2(treino, :), saida(treino, :), mse, 1);
 
 
 resultTreino = round( comite( selecao, dados2(treino, :) ) );

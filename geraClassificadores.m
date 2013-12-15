@@ -5,8 +5,6 @@ function [classificadores, mse] = geraClassificadores(entrada, resposta, quantML
     tamTreino = size(entrada, 1);
     erros = ones(tamTreino, 1);
     
-    size(entrada)
-    size(resposta)
     
     for i=1:quantMLP
         
