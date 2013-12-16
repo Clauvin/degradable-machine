@@ -60,28 +60,169 @@ visualizacao = [v1, v2, v3];
 % 41 para 26 variáveis
 % (índice de 99.00% de importância)
 
-%{
-%limpando os outliers desses pontos mais significativos
-agrupamentos = hist(dados2(:, 1), 11); % Histogram bin counts
-N = max(agrupamentos); % Maximum bin count
-mu3 = mean(agrupamentos); % Data mean
-sigma3 = std(agrupamentos); % Data standard deviation
-
-hist(agrupamentos) % Plot histogram
-hold on
-plot([mu3 mu3],[0 N],'r','LineWidth',2) % Mean
-X = repmat(mu3+(1:2)*sigma3,2,1);
-Y = repmat([0;N],1,2);
-plot(X,Y,'g','LineWidth',2) % Standard deviations
-legend('Data','Mean','Stds')
-hold off
-%}
-
 % boxplot para analise estatística
-olha = boxplot(SCORE,'orientation','vertical','labels',visualizacao(:, 1),'plotstyle','traditional')
-findobj(gcf,'tag','Outliers');
-lista = cumsum([ones(1,1055)])
-% gname(lista')
+analiseboxplot = boxplot(SCORE,'orientation','vertical','labels',visualizacao(:, 1),'plotstyle','traditional');
+locaiscomoutlier = []
+analisedequantidade = []
+analisedasalvacao = []
+
+for i = 1:26
+    
+    analisedelinha = get(analiseboxplot(7, i), 'YData');
+    testando = size(find((analisedelinha < 0)));
+    testando2 = size(find((analisedelinha > 0)));
+    analisedasalvacao = [analisedasalvacao; i, size(analisedelinha, 2), testando(1,2), testando2(1,2)];
+    
+end
+
+analisedasalvacao
+
+%limpeza personalizada
+%i igual a 3 porquê 1 e 2 não tem outliers
+for i = 3:5
+    analisedelinha = get(analiseboxplot(7, i), 'YData');
+    listadeoutliers = analisedelinha';
+    limite = size(listadeoutliers, 1);
+    
+    for j = 1:limite
+        %prealocar?
+        posicao = find(SCORE(:, i) == listadeoutliers(j));
+        locaiscomoutlier = [locaiscomoutlier; posicao];
+    end
+end
+
+%na sexta variável, temos apenas um outlier mesmo, maior que zero
+for i = 6:6
+    analisedelinha = get(analiseboxplot(7, i), 'YData');
+    listadeoutliers = analisedelinha';
+    listadeoutliers = max(listadeoutliers);
+    posicao = find(SCORE(:, i) == listadeoutliers);
+    locaiscomoutlier = [locaiscomoutlier; posicao];
+end
+
+%na nona variável, temos dois outliers mesmo
+for i = 9:9
+    analisedelinha = get(analiseboxplot(7, i), 'YData');
+    listadeoutliers = analisedelinha';
+    listadeoutliers1 = max(listadeoutliers);
+    listadeoutliers2 = min(listadeoutliers);
+    posicao = find(SCORE(:, i) == listadeoutliers1);
+    locaiscomoutlier = [locaiscomoutlier; posicao];
+    posicao = find(SCORE(:, i) == listadeoutliers2);
+    locaiscomoutlier = [locaiscomoutlier; posicao];
+end
+
+%13, cortar tudo
+for i = [13]
+    analisedelinha = get(analiseboxplot(7, i), 'YData');
+    listadeoutliers = analisedelinha';
+    limite = size(listadeoutliers, 1);
+    
+    for j = 1:limite
+        %prealocar?
+        posicao = find(SCORE(:, i) == listadeoutliers(j));
+        locaiscomoutlier = [locaiscomoutlier; posicao];
+    end
+end
+
+%15, cortar um outlier real
+for i = 15:15
+    analisedelinha = get(analiseboxplot(7, i), 'YData');
+    listadeoutliers = analisedelinha';
+    listadeoutliers = max(listadeoutliers);
+    posicao = find(SCORE(:, i) == listadeoutliers);
+    locaiscomoutlier = [locaiscomoutlier; posicao];
+end
+
+%16 e 17, cortar dois outliers, um em cada
+for i = 16:17
+    analisedelinha = get(analiseboxplot(7, i), 'YData');
+    listadeoutliers = analisedelinha';
+    listadeoutliers1 = min(listadeoutliers);
+    posicao = find(SCORE(:, i) == listadeoutliers1);
+    locaiscomoutlier = [locaiscomoutlier; posicao];
+end
+
+%cortar todos no 19 a 20
+for i = 19:20
+    analisedelinha = get(analiseboxplot(7, i), 'YData');
+    listadeoutliers = analisedelinha';
+    limite = size(listadeoutliers, 1);
+    
+    for j = 1:limite
+        %prealocar?
+        posicao = find(SCORE(:, i) == listadeoutliers(j));
+        locaiscomoutlier = [locaiscomoutlier; posicao];
+    end
+end
+
+%no 21, 22 e 23, cortar apenas um e deixar o resto de lado no 24 a 26
+for i = 21:21
+    analisedelinha = get(analiseboxplot(7, i), 'YData');
+    listadeoutliers = analisedelinha';
+    listadeoutliers1 = max(listadeoutliers);
+    posicao = find(SCORE(:, i) == listadeoutliers1);
+    locaiscomoutlier = [locaiscomoutlier; posicao];
+end
+
+for i = 22:22
+    analisedelinha = get(analiseboxplot(7, i), 'YData');
+    listadeoutliers = analisedelinha';
+    listadeoutliers1 = min(listadeoutliers);
+    posicao = find(SCORE(:, i) == listadeoutliers1);
+    locaiscomoutlier = [locaiscomoutlier; posicao];
+end
+
+for i = 23:23
+    analisedelinha = get(analiseboxplot(7, i), 'YData');
+    listadeoutliers = analisedelinha';
+    listadeoutliers1 = max(listadeoutliers);
+    posicao = find(SCORE(:, i) == listadeoutliers1);
+    locaiscomoutlier = [locaiscomoutlier; posicao];
+end
+
+
+%para análise estatistica posterior dos outliers
+outliersorganizados = sortrows(locaiscomoutlier);
+
+
+%para cada entrada, uma posição de outlier apenas, sem repetições
+outliersfiltrados = outliersorganizados;
+
+
+continua = 1;
+i = 1;
+while continua
+    tamanho = size(outliersfiltrados, 1);
+    if (outliersfiltrados(i,1) == outliersfiltrados(i+1,1))
+       if i < tamanho - 1
+           outliersfiltrados = [outliersfiltrados(1:i, 1); outliersfiltrados(i+2:tamanho, 1)];
+       else
+           outliersfiltrados = outliersfiltrados(1:i, 1);
+       end
+    else
+        i = i + 1;
+    end
+    tamanho = size(outliersfiltrados, 1);
+    if i >= tamanho
+        continua = 0;
+    end
+
+end
+
+fim = size(outliersfiltrados,1)
+
+tamfinal = 1055;
+%melhorar aqui
+for i = 0:fim-1
+    
+    antes = outliersfiltrados(fim - i, 1) - 1;
+    depois =  outliersfiltrados(fim - i, 1) + 1;
+    SCORE = [SCORE(1:antes, :);SCORE(depois:tamfinal, :)];
+    saida = [saida(1:antes, :);saida(depois:tamfinal, :)];
+    tamfinal = tamfinal - 1;
+    
+end
 
 %pegando os valores mais significativos.
 visualizacaoutil = visualizacao(1:18, :);
@@ -101,7 +242,6 @@ rede = patternnet([25]);
 %rodando o treino da rede
 rede = train(rede, SCORE', saida')
 %rede = train(rede, SCORE(:, 1:12)', saida')
-
 
 %Dúvida 1:
 % Como ler o histograma de erro?
