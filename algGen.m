@@ -1,22 +1,36 @@
 function [selecao, populacao, adaptacao] = algGen(redes, entrada, resposta, tamPopulacao, quantGeracoes)
     quantRedes = size(redes,1);
-    
+
     %cada individuo eh um vetor binario dizendo se aquele classificador
     %pertence ou nao ao comite que ele representa
-    populacao = randi([0 1], [tamPopulacao quantRedes]); %um individuo por linha
+    populacao = logical(randi([0 1], [tamPopulacao quantRedes])); %um individuo por linha
+
+    [adaptacao, mapa] = fitness(redes, populacao, entrada, resposta, containers.Map);
+
+    taxaMutacao = 0.01;
+    melhorFitness = 0;
     
     for i=1: quantGeracoes
-        populacao = mating(redes, populacao, entrada, resposta);
-        populacao = mutacao(populacao, 0.01);
+        populacao = mating(populacao, adaptacao);
+        populacao = mutacao(populacao, taxaMutacao);
+        [adaptacao, mapa] = fitness(redes, populacao, entrada, resposta, mapa);
+        [melhorFitnessGeracao, melhorIndividuoGeracao] = max(adaptacao);
+        
+        if melhorFitness < melhorFitnessGeracao
+            melhorFitness = melhorFitnessGeracao;
+            melhorIndividuo = populacao(melhorIndividuoGeracao, :);
+            taxaMutacao = 0.01;
+        else
+            taxaMutacao = taxaMutacao* 2; % choque de mutacao
+        end
+        
+        save('geracaoAlgGen.mat');
         i
     end
-    adaptacao = fitness(redes, populacao, entrada, resposta);
-    [melhorFitness, melhorIndividuo] = max(adaptacao);
     
-    %find retorna um vetor com todas as posicoes nao nulas, entao com isso
-    %converto o vetor binario na melhor combinacao de redes
-    melhorMse = 1/melhorFitness
-    selecao = redes(find(melhorIndividuo));
+    melhorMSE=(1/melhorFitness)
+    
+    selecao = redes(melhorIndividuo);
 end
 
 

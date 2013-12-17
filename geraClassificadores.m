@@ -1,5 +1,5 @@
 function [classificadores, mse] = geraClassificadores(entrada, resposta, quantMLP, quantSVM)
-    classificadores = {};
+    classificadores = cell(quantMLP + quantSVM, 1);
     mse = zeros(quantMLP+ quantSVM,1);
     
     tamTreino = size(entrada, 1);
@@ -24,6 +24,11 @@ function [classificadores, mse] = geraClassificadores(entrada, resposta, quantML
         end
         
         atual.trainParam.max_fail = randi([4, 20]);
+        
+        atual.divideParam.testRatio = 0;
+        atual.divideParam.trainRatio = 0.85;
+        atual.divideParam.valRatio = 0.15;
+        
         %atual.trainParam.showWindow =0;
         
         %treino =  randi( [1 tamTreino], [size(entrada,1) 1] ); %equivalente ao baggin

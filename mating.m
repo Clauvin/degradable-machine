@@ -1,7 +1,6 @@
-function novaGeracao = mating(redes, populacao, entrada, resposta)
+function novaGeracao = mating(populacao, adaptacao)
     [tamPopulacao quantRedes]= size(populacao);
     
-    adaptacao = fitness(redes, populacao, entrada, resposta);
     novaGeracao = zeros(tamPopulacao, quantRedes);
     
     for i=1 : floor(tamPopulacao/2)
@@ -19,9 +18,5 @@ function amostra= roleta(adaptacao)
     proporcao = cumsum( adaptacao/sum(adaptacao) );
     sorteio = rand();
     resultado = find(sorteio <= proporcao);
-    try
-        amostra = resultado(1,1);
-    catch er
-        er
-    end
+    amostra = resultado(1,1);
 end

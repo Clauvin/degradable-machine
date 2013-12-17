@@ -25,10 +25,14 @@ dados2 = normalizacao(dados2);
 %parametros
 [treino, validacao, teste]=dividerand(size(dados, 1), 0.7, 0, 0.3);
 
-[ redes, mse ] = geraClassificadores(dados2(treino, :), saida(treino, :), 50, 200);
+[ redes, mse ] = geraClassificadores(dados2(treino, :), saida(treino, :), 100, 200);
+save('classificadores.mat');
 
-[selecaoGen, populacao, adaptacao] = algGen( redes, dados2(treino, :), saida(treino, :), 1000, 100);
-selecao = selecaoComite(redes, dados2(treino, :), saida(treino,:), mse, 0);
+selecao = selecaoComite(redes, dados2(treino, :), saida(treino,:), mse, 1);
+save('saveConstrucao.mat');
+
+[selecaoGen, populacao, adaptacao] = algGen( redes, dados2(treino, :), saida(treino, :), 100, 100);
+save('saveAlgGen.mat');
 
 %busca
 resultTreino = round( comite( selecao, dados2(treino, :) ) );
